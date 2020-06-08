@@ -4,6 +4,7 @@
 #   Import Libraries
 #---------------------------
 import clr, codecs, json, os, re, random, sys, threading, datetime
+random = random.WichmannHill()
 
 clr.AddReference("IronPython.Modules.dll")
 clr.AddReferenceToFileAndPath(os.path.join(os.path.dirname(os.path.realpath(__file__)) + "\References", "TwitchLib.PubSub.dll"))
@@ -105,6 +106,7 @@ def EventReceiverConnected(sender, e):
     }
     result = json.loads(Parent.GetRequest("https://api.twitch.tv/helix/users?login=" + Parent.GetChannelName(), headers))
     if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, "headers: " + str(headers))
         Parent.Log(ScriptName, "result: " + str(result))
     user = json.loads(result["response"])
     id = user["data"][0]["id"]
