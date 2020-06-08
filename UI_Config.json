@@ -1,0 +1,138 @@
+{
+	"output_file": "settings.json",
+	"TwitchReward1Name": {
+		"type": "textbox",
+		"value": "",
+		"label": "Title of Twitch Reward",
+		"tooltip": "Specify the name of the Twitch Reward that will trigger this event when detected.",
+		"group": "Twitch Reward 1 Event"
+	},
+	"Media1Path": {
+		"type": "textbox",
+		"value": "",
+		"label": "Path to media files",
+		"tooltip": "Specify the path to the media (gif, jpeg, png, etc) to pull.",
+		"group": "Twitch Reward 1 Event"
+	},
+	"Media1Delay": {
+		"type": "numberbox",
+		"label": "Media Delay in Seconds",
+		"value": 10,
+		"tooltip": "Specify the number of seconds to wait before updating to next media element after a reward has been redeemed.",
+		"group": "Twitch Reward 1 Event"
+	},
+	"TwitchReward2Name": {
+		"type": "textbox",
+		"value": "",
+		"label": "Title of Twitch Reward",
+		"tooltip": "Specify the name of the Twitch Reward that will trigger this event when detected.",
+		"group": "Twitch Reward 2 Event"
+	},
+	"Media2Path": {
+		"type": "textbox",
+		"value": "",
+		"label": "Path to media files",
+		"tooltip": "Specify the path to the media (gif, jpeg, png, etc) to pull.",
+		"group": "Twitch Reward 2 Event"
+	},
+	"Media2Delay": {
+		"type": "numberbox",
+		"label": "Media Delay in Seconds",
+		"value": 10,
+		"tooltip": "Specify the number of seconds to wait before updating to next media element after a reward has been redeemed.",
+		"group": "Twitch Reward 2 Event"
+	},
+	"TwitchReward3Name": {
+		"type": "textbox",
+		"value": "",
+		"label": "Title of Twitch Reward",
+		"tooltip": "Specify the name of the Twitch Reward that will trigger this event when detected.",
+		"group": "Twitch Reward 3 Event"
+	},
+	"Media3Path": {
+		"type": "textbox",
+		"value": "",
+		"label": "Path to media files",
+		"tooltip": "Specify the path to the media (gif, jpeg, png, etc) to pull.",
+		"group": "Twitch Reward 3 Event"
+	},
+	"Media3Delay": {
+		"type": "numberbox",
+		"label": "Media Delay in Seconds",
+		"value": 10,
+		"tooltip": "Specify the number of seconds to wait before updating to next media element after a reward has been redeemed.",
+		"group": "Twitch Reward 3 Event"
+	},
+	"TwitchReward4Name": {
+		"type": "textbox",
+		"value": "",
+		"label": "Title of Twitch Reward",
+		"tooltip": "Specify the name of the Twitch Reward that will trigger this event when detected.",
+		"group": "Twitch Reward 4 Event"
+	},
+	"Media4Path": {
+		"type": "textbox",
+		"value": "",
+		"label": "Path to media files",
+		"tooltip": "Specify the path to the media (gif, jpeg, png, etc) to pull.",
+		"group": "Twitch Reward 4 Event"
+	},
+	"Media4Delay": {
+		"type": "numberbox",
+		"label": "Media Delay in Seconds",
+		"value": 10,
+		"tooltip": "Specify the number of seconds to wait before updating to next media element after a reward has been redeemed.",
+		"group": "Twitch Reward 4 Event"
+	},
+	"TwitchReward5Name": {
+		"type": "textbox",
+		"value": "",
+		"label": "Title of Twitch Reward",
+		"tooltip": "Specify the name of the Twitch Reward that will trigger this event when detected.",
+		"group": "Twitch Reward 5 Event"
+	},
+	"Media5Path": {
+		"type": "textbox",
+		"value": "",
+		"label": "Path to media files",
+		"tooltip": "Specify the path to the media (gif, jpeg, png, etc) to pull.",
+		"group": "Twitch Reward 5 Event"
+	},
+	"Media5Delay": {
+		"type": "numberbox",
+		"label": "Media Delay in Seconds",
+		"value": 10,
+		"tooltip": "Specify the number of seconds to wait before updating to next media element after a reward has been redeemed.",
+		"group": "Twitch Reward 5 Event"
+	},
+	"TwitchOAuthToken": {
+		"type": "textbox",
+		"value": "",
+		"label": "Twitch oAuth Token",
+		"tooltip": "Enter an oAuth token that allows the bot to read channel point redemptions on the channel being watched.",
+		"group": "Twitch oAuth - KEEP HIDDEN"
+	},
+	"btnGetToken": {
+		"type": "button",
+		"label": "Get Token",
+		"tooltip": "Generate an oAuth Token for the watched twitch account with permissions to read channel point redemptions.",
+		"wsevent": "",
+		"function": "GetToken",
+		"group": "Twitch oAuth - KEEP HIDDEN"
+	},
+	"btnreadme": {
+		"type": "button",
+		"label": "open readme",
+		"tooltip": "read this!",
+		"wsevent": "",
+		"function": "openreadme",
+		"group": ""
+	},
+	"EnableDebug": {
+		"type": "checkbox",
+		"value": false,
+		"label": "Enable Debug",
+		"tooltip": "Enable or disable debug logs",
+		"group": "Debug Settings"
+	}
+}
