@@ -139,10 +139,13 @@ def RewardRedeemedWorker(path, delay):
 
     random_image = random.choice(os.listdir(path))
 
+    payload = { "path": path + "\\" + random_image };
+
     if ScriptSettings.EnableDebug:
         Parent.Log(ScriptName, random_image)
-
-    Parent.BroadcastWsEvent('EVENT_MEDIA_REDEEMED', path + "\\" + random_image)
+        Parent.Log(ScriptName, str(payload))
+    
+    Parent.BroadcastWsEvent('EVENT_MEDIA_REDEEMED', json.dumps(payload, encoding='utf-8-sig'))
 
     global PlayNextAt
     PlayNextAt = datetime.datetime.now() + datetime.timedelta(0, delay)

@@ -21,7 +21,7 @@ function connectWebsocket() {
     //-------------------------------------------
     //  Create WebSocket
     //-------------------------------------------
-    var socket = new WebSocket("ws://127.0.0.1:3337/streamlabs");
+    var socket = new WebSocket(API_Socket);
 
     //-------------------------------------------
     //  Websocket Event: OnOpen
@@ -53,9 +53,11 @@ function connectWebsocket() {
 
         //EVENT_QUEUE_DISPLAY
         if (socketMessage.event === "EVENT_MEDIA_REDEEMED") {
-            $("#media").attr("src", socketMessage.data);
-            //.delay(5000)
-            //.fadeOut(100);
+            $("#media")
+            .attr("src", JSON.parse(socketMessage.data).path)
+            .show()
+            .delay(5000)
+            .fadeOut(100);
         }
     };
 
