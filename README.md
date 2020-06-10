@@ -14,7 +14,7 @@ Once installed you will need to provide an oAuth token. You can get one by click
 
 ![token](https://user-images.githubusercontent.com/50642352/82402817-f8165480-9a22-11ea-8810-fc93899d785a.png)
 
-You will also need to give the script access to broadcast streamlabs events. This can be achieved by right clicking on the script in Streamlabs Chatbot and selecting "Insert API Key".
+You will also need to give the script access to broadcast streamlabs events. This can be achieved by right clicking on the script in Streamlabs Chatbot and selecting "Insert API Key". https://github.com/StreamlabsSupport/Streamlabs-Chatbot/wiki/Script-overlays
 
 ![api key](https://user-images.githubusercontent.com/50642352/83985340-7701fd00-a8fe-11ea-9aca-393d6dc7d4b4.png)
 
