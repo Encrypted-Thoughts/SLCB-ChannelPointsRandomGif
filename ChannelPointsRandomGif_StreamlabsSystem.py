@@ -95,24 +95,8 @@ def Init():
             RefreshToken = data["refresh_token"]
             AccessToken = data["access_token"]
             TokenExpiration = datetime.datetime.strptime(data["expiration"], "%Y-%m-%d %H:%M:%S.%f")
-            RefreshTokens()
-    else:
-        content = {
-            'grant_type': 'authorization_code',
-            'code': ScriptSettings.TwitchAuthCode
-        }
-
-        result = json.loads(json.loads(Parent.PostRequest("https://api.et-twitch-auth.com/",{}, content, True))["response"])
-        if ScriptSettings.EnableDebug:
-            Parent.Log(ScriptName, str(content))
-            Parent.Log(ScriptName, str(result))
-
-        RefreshToken = result["refresh_token"]
-        AccessToken = result["access_token"]
-        TokenExpiration = datetime.datetime.now() + datetime.timedelta(seconds=int(result["expires_in"]) - 300)
-
-        LastTokenCheck = datetime.datetime.now()
-        SaveTokens()
+    
+    RefreshTokens()
 
     return
 
@@ -290,15 +274,31 @@ def RefreshTokens():
     global AccessToken
     global TokenExpiration
     global LastTokenCheck
-    content = {
-	    "grant_type": "refresh_token",
-	    "refresh_token": str(RefreshToken)
-    }
 
-    result = json.loads(json.loads(Parent.PostRequest("https://api.et-twitch-auth.com/",{}, content, True))["response"])
+    result = None
+
+    if RefreshToken:
+        content = {
+	        "grant_type": "refresh_token",
+	        "refresh_token": str(RefreshToken)
+        }
+
+        result = json.loads(json.loads(Parent.PostRequest("https://api.et-twitch-auth.com/",{}, content, True))["response"])
+        if ScriptSettings.EnableDebug:
+            Parent.Log(ScriptName, str(content))
+    else:
+        content = {
+            'grant_type': 'authorization_code',
+            'code': ScriptSettings.TwitchAuthCode
+        }
+
+        result = json.loads(json.loads(Parent.PostRequest("https://api.et-twitch-auth.com/",{}, content, True))["response"])
+        if ScriptSettings.EnableDebug:
+            Parent.Log(ScriptName, str(content))
+
     if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, str(content))
         Parent.Log(ScriptName, str(result))
+
     RefreshToken = result["refresh_token"]
     AccessToken = result["access_token"]
     TokenExpiration = datetime.datetime.now() + datetime.timedelta(seconds=int(result["expires_in"]) - 300)
@@ -323,5 +323,7 @@ def GetToken():
 	os.startfile("https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=icyqwwpy744ugu5x4ymyt6jqrnpxso&redirect_uri=https://et-twitch-auth.com/&scope=channel:read:redemptions&force_verify=true")
 
 def DeleteSavedTokens():
+    global RefreshToken
     if os.path.exists(RefreshTokenFile):
         os.remove(RefreshTokenFile)
+    RefreshToken = None

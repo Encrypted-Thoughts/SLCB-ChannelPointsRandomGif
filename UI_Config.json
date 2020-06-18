@@ -128,6 +128,14 @@
 		"function": "DeleteSavedTokens",
 		"group": "Twitch Auth Code - KEEP HIDDEN"
 	},
+	"btnRefreshTokens": {
+		"type": "button",
+		"label": "Refresh Saved Tokens",
+		"tooltip": "Manually trigger a refresh of access token using refresh token..",
+		"wsevent": "",
+		"function": "RefreshTokens",
+		"group": "Twitch Auth Code - KEEP HIDDEN"
+	},
 	"btnreadme": {
 		"type": "button",
 		"label": "open readme",
