@@ -98,71 +98,6 @@ def Init():
 
     return
 
-def StartEventReceiver():
-    if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, "Starting receiver");
-
-    global EventReceiver
-    EventReceiver = TwitchPubSub()
-    EventReceiver.OnPubSubServiceConnected += EventReceiverConnected
-    EventReceiver.OnRewardRedeemed += EventReceiverRewardRedeemed
-
-    EventReceiver.Connect()
-
-def StopEventReceiver():
-    global EventReceiver
-    try:
-        if EventReceiver:
-            EventReceiver.Disconnect()
-            if ScriptSettings.EnableDebug:
-                Parent.Log(ScriptName, "Event receiver disconnected")
-        EventReceiver = None
-
-    except:
-        if ScriptSettings.EnableDebug:
-            Parent.Log(ScriptName, "Event receiver already disconnected")
-
-def EventReceiverConnected(sender, e):
-    if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, "Event receiver connected, sending topics for channel id: " + str(UserID))
-
-    EventReceiver.ListenToRewards(UserID)
-    EventReceiver.SendTopics(AccessToken)
-    return
-
-def EventReceiverRewardRedeemed(sender, e):
-    if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, "Event triggered")
-    if e.RewardTitle == ScriptSettings.TwitchReward1Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media1Path, ScriptSettings.Media1Delay,)))
-    if e.RewardTitle == ScriptSettings.TwitchReward2Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media2Path, ScriptSettings.Media2Delay,)))
-    if e.RewardTitle == ScriptSettings.TwitchReward3Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media3Path, ScriptSettings.Media3Delay,)))
-    if e.RewardTitle == ScriptSettings.TwitchReward4Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media4Path, ScriptSettings.Media4Delay,)))
-    if e.RewardTitle == ScriptSettings.TwitchReward5Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media5Path, ScriptSettings.Media5Delay,)))
-    return
-
-def RewardRedeemedWorker(path, delay):
-    if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, path + " " + str(delay))
-
-    random_image = random.choice(os.listdir(path))
-
-    payload = { "path": path + "\\" + random_image };
-
-    if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, random_image)
-        Parent.Log(ScriptName, str(payload))
-    
-    Parent.BroadcastWsEvent('EVENT_MEDIA_REDEEMED', json.dumps(payload, encoding='utf-8-sig'))
-
-    global PlayNextAt
-    PlayNextAt = datetime.datetime.now() + datetime.timedelta(0, delay)
-
-
 #---------------------------
 #   [Required] Execute Data / Process messages
 #---------------------------
@@ -207,8 +142,6 @@ def Parse(parseString, userid, username, targetid, targetname, message):
 #   [Optional] Reload Settings (Called when a user clicks the Save Settings button in the Chatbot UI)
 #---------------------------
 def ReloadSettings(jsonData):
-    # Execute json reloading here
-
     if ScriptSettings.EnableDebug:
         Parent.Log(ScriptName, "Saving settings.")
 
@@ -230,7 +163,6 @@ def ReloadSettings(jsonData):
 #   [Optional] Unload (Called when a user reloads their scripts or closes the bot / cleanup stuff)
 #---------------------------
 def Unload():
-    # Disconnect EventReceiver cleanly
     StopEventReceiver()
     return
 
@@ -249,6 +181,88 @@ def ScriptToggled(state):
 
     return
 
+#---------------------------
+#   StartEventReceiver (Start twitch pubsub event receiver)
+#---------------------------
+def StartEventReceiver():
+    if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, "Starting receiver")
+
+    global EventReceiver
+    EventReceiver = TwitchPubSub()
+    EventReceiver.OnPubSubServiceConnected += EventReceiverConnected
+    EventReceiver.OnRewardRedeemed += EventReceiverRewardRedeemed
+
+    EventReceiver.Connect()
+
+#---------------------------
+#   StopEventReceiver (Stop twitch pubsub event receiver)
+#---------------------------
+def StopEventReceiver():
+    global EventReceiver
+    try:
+        if EventReceiver:
+            EventReceiver.Disconnect()
+            if ScriptSettings.EnableDebug:
+                Parent.Log(ScriptName, "Event receiver disconnected")
+        EventReceiver = None
+
+    except:
+        if ScriptSettings.EnableDebug:
+            Parent.Log(ScriptName, "Event receiver already disconnected")
+
+#---------------------------
+#   EventReceiverConnected (Twitch pubsub event callback for on connected event. Needs a valid UserID and AccessToken to function properly.)
+#---------------------------
+def EventReceiverConnected(sender, e):
+    if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, "Event receiver connected, sending topics for channel id: " + str(UserID))
+
+    EventReceiver.ListenToRewards(UserID)
+    EventReceiver.SendTopics(AccessToken)
+    return
+
+#---------------------------
+#   EventReceiverRewardRedeemed (Twitch pubsub event callback for a detected redeemed channel point reward.)
+#---------------------------
+def EventReceiverRewardRedeemed(sender, e):
+    if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, "Event triggered")
+    if e.RewardTitle == ScriptSettings.TwitchReward1Name:
+        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media1Path, ScriptSettings.Media1Delay,)))
+    if e.RewardTitle == ScriptSettings.TwitchReward2Name:
+        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media2Path, ScriptSettings.Media2Delay,)))
+    if e.RewardTitle == ScriptSettings.TwitchReward3Name:
+        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media3Path, ScriptSettings.Media3Delay,)))
+    if e.RewardTitle == ScriptSettings.TwitchReward4Name:
+        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media4Path, ScriptSettings.Media4Delay,)))
+    if e.RewardTitle == ScriptSettings.TwitchReward5Name:
+        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media5Path, ScriptSettings.Media5Delay,)))
+    return
+
+#---------------------------
+#   RewardRedeemedWorker (Worker function to be spun off into its own thread to complete without blocking the rest of script execution.)
+#---------------------------
+def RewardRedeemedWorker(path, delay):
+    if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, path + " " + str(delay))
+
+    random_image = random.choice(os.listdir(path))
+
+    payload = { "path": path + "\\" + random_image }
+
+    if ScriptSettings.EnableDebug:
+        Parent.Log(ScriptName, random_image)
+        Parent.Log(ScriptName, str(payload))
+    
+    Parent.BroadcastWsEvent('EVENT_MEDIA_REDEEMED', json.dumps(payload, encoding='utf-8-sig'))
+
+    global PlayNextAt
+    PlayNextAt = datetime.datetime.now() + datetime.timedelta(0, delay)
+
+#---------------------------
+#   RefreshTokens (Called when a new access token needs to be retrieved.)
+#---------------------------
 def RefreshTokens():
     global RefreshToken
     global AccessToken
@@ -286,8 +300,10 @@ def RefreshTokens():
     LastTokenCheck = datetime.datetime.now()
     SaveTokens()
 
+#---------------------------
+#   GetUserID (Calls twitch's api with current channel user name to get the user id and sets global UserID variable.)
+#---------------------------
 def GetUserID():
-    #get channel id for username
     global UserID
     headers = { 
         "Client-ID": "icyqwwpy744ugu5x4ymyt6jqrnpxso",
@@ -300,6 +316,9 @@ def GetUserID():
     user = json.loads(result["response"])
     UserID = user["data"][0]["id"]
 
+#---------------------------
+#   SaveTokens (Saves tokens and expiration time to a json file in script bin for use on script restart and reload.)
+#---------------------------
 def SaveTokens():
     data = {
         "refresh_token": RefreshToken,
@@ -310,12 +329,21 @@ def SaveTokens():
     with open(RefreshTokenFile, 'w') as f:
         f.write(json.dumps(data))
 
+#---------------------------
+#   OpenReadme (Attached to settings button to open the readme file in the script bin.)
+#---------------------------
 def OpenReadme():
     os.startfile(ReadMe)
 
+#---------------------------
+#   GetToken (Attached to settings button to open a page in browser to get an authorization code.)
+#---------------------------
 def GetToken():
 	os.startfile("https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=icyqwwpy744ugu5x4ymyt6jqrnpxso&redirect_uri=https://et-twitch-auth.com/&scope=channel:read:redemptions&force_verify=true")
 
+#---------------------------
+#   DeleteSavedTokens (Attached to settings button to allow user to easily delete the tokens.json file and clear out RefreshToken currently in memory so that a new authorization code can be entered and used.)
+#---------------------------
 def DeleteSavedTokens():
     global RefreshToken
     if os.path.exists(RefreshTokenFile):
