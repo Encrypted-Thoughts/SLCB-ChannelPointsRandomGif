@@ -115,12 +115,7 @@ def Execute(data):
 #---------------------------
 def Tick():
     if (EventReceiver is None or TokenExpiration < datetime.datetime.now()) and LastTokenCheck + datetime.timedelta(seconds=60) < datetime.datetime.now(): 
-        RefreshTokens();
-        if InvalidRefreshToken is False:
-            if UserID is None:
-                GetUserID()
-            StopEventReceiver()
-            StartEventReceiver()
+        RestartEventReceiver()
         return
 
     global PlayNextAt
@@ -156,12 +151,7 @@ def ReloadSettings(jsonData):
         ScriptSettings.__dict__ = json.loads(jsonData)
         ScriptSettings.Save(SettingsFile)
 
-        RefreshTokens()
-        if InvalidRefreshToken is False:
-            if UserID is None:
-                GetUserID()
-            StopEventReceiver()
-            StartEventReceiver()
+        threading.Thread(target=RestartEventReceiver).start()
 
         if ScriptSettings.EnableDebug:
             Parent.Log(ScriptName, "Settings saved successfully")
@@ -184,11 +174,7 @@ def Unload():
 def ScriptToggled(state):
     if state:
         if EventReceiver is None:
-            RefreshTokens()
-            if InvalidRefreshToken is False:
-                if UserID is None:
-                    GetUserID()
-                StartEventReceiver()
+            threading.Thread(target=RestartEventReceiver).start()
     else:
         StopEventReceiver()
 
@@ -223,6 +209,17 @@ def StopEventReceiver():
     except:
         if ScriptSettings.EnableDebug:
             Parent.Log(ScriptName, "Event receiver already disconnected")
+
+#---------------------------
+#   RestartEventReceiver (Restart event receiver cleanly)
+#---------------------------
+def RestartEventReceiver():
+    RefreshTokens()
+    if InvalidRefreshToken is False:
+        if UserID is None:
+            GetUserID()
+        StopEventReceiver()
+        StartEventReceiver()
 
 #---------------------------
 #   EventReceiverConnected (Twitch pubsub event callback for on connected event. Needs a valid UserID and AccessToken to function properly.)
