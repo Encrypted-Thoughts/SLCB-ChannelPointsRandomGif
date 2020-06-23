@@ -114,6 +114,9 @@ def Execute(data):
 #   [Required] Tick method (Gets called during every iteration even when there is no incoming data)
 #---------------------------
 def Tick():
+    if LastTokenCheck is None:
+        return
+
     if (EventReceiver is None or TokenExpiration < datetime.datetime.now()) and LastTokenCheck + datetime.timedelta(seconds=60) < datetime.datetime.now(): 
         RestartEventReceiver()
         return
@@ -237,7 +240,11 @@ def EventReceiverConnected(sender, e):
 #---------------------------
 def EventReceiverRewardRedeemed(sender, e):
     if ScriptSettings.EnableDebug:
-        Parent.Log(ScriptName, "Event triggered")
+        Parent.Log(ScriptName, "Event triggered: " + str(e.TimeStamp) + " ChannelId: " + str(e.ChannelId) + " Login: " + str(e.Login) + " DisplayName: " + str(e.DisplayName) + " Message: " + str(e.Message) + " RewardId: " + str(e.RewardId) + " RewardTitle: " + str(e.RewardTitle) + " RewardPrompt: " + str(e.RewardPrompt) + " RewardCost: " + str(e.RewardCost) + " Status: " + str(e.Status))
+    
+    if "FULFILLED" not in e.Status:
+        return
+        
     if e.RewardTitle == ScriptSettings.TwitchReward1Name:
         ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media1Path, ScriptSettings.Media1Delay,)))
     if e.RewardTitle == ScriptSettings.TwitchReward2Name:
