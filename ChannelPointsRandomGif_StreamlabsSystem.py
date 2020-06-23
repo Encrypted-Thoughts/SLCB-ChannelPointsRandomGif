@@ -53,18 +53,23 @@ class Settings(object):
             self.EnableDebug = False
             self.TwitchAuthCode = ""
             self.TwitchReward1Name = ""
+            self.TwitchReward1ActivationType = "Immediate"
             self.Media1Path = ""
             self.Media1Delay = 10
             self.TwitchReward2Name = ""
+            self.TwitchReward2ActivationType = "Immediate"
             self.Media2Path = ""
             self.Media2Delay = 10
             self.TwitchReward3Name = ""
+            self.TwitchReward3ActivationType = "Immediate"
             self.Media3Path = ""
             self.Media3Delay = 10
             self.TwitchReward4Name = ""
+            self.TwitchReward4ActivationType = "Immediate"
             self.Media4Path = ""
             self.Media4Delay = 10
             self.TwitchReward5Name = ""
+            self.TwitchReward5ActivationType = "Immediate"
             self.Media5Path = ""
             self.Media5Delay = 10
 
@@ -241,20 +246,22 @@ def EventReceiverConnected(sender, e):
 def EventReceiverRewardRedeemed(sender, e):
     if ScriptSettings.EnableDebug:
         Parent.Log(ScriptName, "Event triggered: " + str(e.TimeStamp) + " ChannelId: " + str(e.ChannelId) + " Login: " + str(e.Login) + " DisplayName: " + str(e.DisplayName) + " Message: " + str(e.Message) + " RewardId: " + str(e.RewardId) + " RewardTitle: " + str(e.RewardTitle) + " RewardPrompt: " + str(e.RewardPrompt) + " RewardCost: " + str(e.RewardCost) + " Status: " + str(e.Status))
-    
-    if "FULFILLED" not in e.Status:
-        return
         
     if e.RewardTitle == ScriptSettings.TwitchReward1Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media1Path, ScriptSettings.Media1Delay,)))
+        if (ScriptSettings.TwitchReward1ActivationType == "Immediate" and "FULFILLED" in e.Status) or (ScriptSettings.TwitchReward1ActivationType == "On Reward Queue Accept/Reject" and "ACTION_TAKEN" in e.Status):
+            ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media1Path, ScriptSettings.Media1Delay,)))
     if e.RewardTitle == ScriptSettings.TwitchReward2Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media2Path, ScriptSettings.Media2Delay,)))
+        if (ScriptSettings.TwitchReward2ActivationType == "Immediate" and "FULFILLED" in e.Status) or (ScriptSettings.TwitchReward2ActivationType == "On Reward Queue Accept/Reject" and "ACTION_TAKEN" in e.Status):
+            ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media2Path, ScriptSettings.Media2Delay,)))
     if e.RewardTitle == ScriptSettings.TwitchReward3Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media3Path, ScriptSettings.Media3Delay,)))
+        if (ScriptSettings.TwitchReward3ActivationType == "Immediate" and "FULFILLED" in e.Status) or (ScriptSettings.TwitchReward3ActivationType == "On Reward Queue Accept/Reject" and "ACTION_TAKEN" in e.Status):
+            ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media3Path, ScriptSettings.Media3Delay,)))
     if e.RewardTitle == ScriptSettings.TwitchReward4Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media4Path, ScriptSettings.Media4Delay,)))
+        if (ScriptSettings.TwitchReward4ActivationType == "Immediate" and "FULFILLED" in e.Status) or (ScriptSettings.TwitchReward4ActivationType == "On Reward Queue Accept/Reject" and "ACTION_TAKEN" in e.Status):
+            ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media4Path, ScriptSettings.Media4Delay,)))
     if e.RewardTitle == ScriptSettings.TwitchReward5Name:
-        ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media5Path, ScriptSettings.Media5Delay,)))
+        if (ScriptSettings.TwitchReward5ActivationType == "Immediate" and "FULFILLED" in e.Status) or (ScriptSettings.TwitchReward5ActivationType == "On Reward Queue Accept/Reject" and "ACTION_TAKEN" in e.Status):
+            ThreadQueue.append(threading.Thread(target=RewardRedeemedWorker,args=(ScriptSettings.Media5Path, ScriptSettings.Media5Delay,)))
     return
 
 #---------------------------
