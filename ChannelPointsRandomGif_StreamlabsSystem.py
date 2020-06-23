@@ -3,11 +3,15 @@
 #---------------------------
 #   Import Libraries
 #---------------------------
-import clr, codecs, json, os, re, random, sys, threading, datetime
+import clr, codecs, json, os, re, random, sys, System, threading, datetime
 random = random.WichmannHill()
 
 clr.AddReference("IronPython.Modules.dll")
-clr.AddReferenceToFileAndPath(os.path.join(os.path.dirname(os.path.realpath(__file__)) + "\References", "TwitchLib.PubSub.dll"))
+clr.AddReference("System.IO")
+clr.AddReference("System.Reflection")
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + r"\References")
+clr.AddReference(r"TwitchLib.PubSub.dll")
 from TwitchLib.PubSub import TwitchPubSub
 
 #---------------------------
